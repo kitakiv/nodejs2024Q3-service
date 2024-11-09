@@ -1,9 +1,7 @@
-import { User, UserObject } from '../interface/userinterface';
+import { UserObject } from '../interface/userinterface';
 import { v4 as uuid } from 'uuid';
 import { CreateUserDto, UpdatePasswordDto } from '../../user/dto/user.dto';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
-import { c } from 'vite/dist/node/types.d-aGj9QkWt';
-import { UserSecurity } from 'src/user/interface/interface';
 
 class UserDB {
   private user: UserObject;

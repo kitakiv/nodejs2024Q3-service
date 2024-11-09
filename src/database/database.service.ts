@@ -4,7 +4,7 @@ import TrackDB from './tracks/trackdb';
 import { UserSecurity } from '../user/interface/interface';
 import { CreateUserDto, UpdatePasswordDto } from '../user/dto/user.dto';
 import { Track } from './interface/trackinterface';
-import { CreateTrackDto } from 'src/track/interface/interface';
+import { CreateTrackDto } from 'src/track/dto/track.dto';
 
 @Global()
 @Injectable()
@@ -48,7 +48,7 @@ export class DatabaseService {
     return this.userDB.deleteUser(id);
   }
 
-  async createTrack(track: Track): Promise<Track> {
+  async createTrack(track: CreateTrackDto): Promise<Track> {
     return this.trackDB.createTrack(track);
   }
 
@@ -56,7 +56,7 @@ export class DatabaseService {
     return this.trackDB.updateTrack(track, trackId);
   }
 
-  async deleteTrack(trackId: string): Promise<Track> {
+  async deleteTrack(trackId: string): Promise<object> {
     return this.trackDB.deleteTrack(trackId);
   }
 }

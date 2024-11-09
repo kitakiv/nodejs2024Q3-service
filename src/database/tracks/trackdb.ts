@@ -1,6 +1,7 @@
-import { CreateTrackDto } from 'src/track/interface/interface';
+import { CreateTrackDto } from '../../track/dto/track.dto';
 import { TrackObject } from '../interface/trackinterface';
 import { v4 as uuid } from 'uuid';
+import { NotFoundException } from '@nestjs/common';
 
 class TrackDB {
   private track: TrackObject;
@@ -18,7 +19,7 @@ class TrackDB {
   getTrack(id: string) {
     const track = this.track.entries[id];
     if (!track) {
-      throw new Error('Track not found');
+      throw new NotFoundException('Track not found');
     }
     return track;
   }
@@ -41,7 +42,7 @@ class TrackDB {
   updateTrack(track: CreateTrackDto, trackId: string) {
     const trackExists = this.track.entries[trackId];
     if (!trackExists) {
-      throw new Error('Track not found');
+      throw new NotFoundException('Track not found');
     }
 
     trackExists.name = track.name;
@@ -54,7 +55,7 @@ class TrackDB {
   deleteTrack(trackId: string) {
     const trackIndex = this.track.ids.indexOf(trackId);
     if (trackIndex === -1) {
-      throw new Error('Track not found');
+      throw new NotFoundException('Track not found');
     }
     this.track.ids.splice(trackIndex, 1);
     delete this.track.entries[trackId];
