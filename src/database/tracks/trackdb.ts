@@ -61,6 +61,10 @@ class TrackDB {
     delete this.track.entries[trackId];
     return this.track.entries[trackId];
   }
+
+  getTracks() {
+    return this.track;
+  }
 }
 
 export default TrackDB;
