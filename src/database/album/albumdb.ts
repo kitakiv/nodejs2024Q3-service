@@ -1,9 +1,8 @@
 import { CreateAlbumDto } from 'src/album/dto/album.dto';
-import { Album, AlbumObject } from '../interface/albuminterface';
+import { AlbumObject } from '../interface/albuminterface';
 import { v4 as uuid } from 'uuid';
 import { NotFoundException } from '@nestjs/common';
-import { Track, TrackObject } from '../interface/trackinterface';
-import { ArtistObject } from '../interface/artistinterface';
+import { TrackObject } from '../interface/trackinterface';
 
 class AlbumDB {
   private album: AlbumObject;
@@ -49,23 +48,33 @@ class AlbumDB {
     return updatedAlbum;
   }
 
-  deleteAlbum(id: string, tracks: TrackObject) {
+  deleteAlbum(id: string) {
     const index = this.album.ids.indexOf(id);
     if (index === -1) {
       throw new NotFoundException('Album not found');
     }
     this.album.ids.splice(index, 1);
-    tracks.ids.forEach((trackId) => {
-      if (tracks.entries[trackId].albumId === id) {
-        tracks.entries[trackId].albumId = null;
-      }
-    });
     delete this.album.entries[id];
     return this.album.entries[id];
   }
 
+  deleteArtistFromAlbum(artistId: string) {
+    this.album.ids.forEach((albumId) => {
+      const album = this.album.entries[albumId];
+      if (album) {
+        if (album.artistId === artistId) {
+          this.album.entries[albumId].artistId = null;
+        }
+      }
+    });
+  }
+
   getAlbums() {
     return this.album;
+  }
+
+  albumExists(id: string) {
+    return this.album.entries[id] || false;
   }
 }
 

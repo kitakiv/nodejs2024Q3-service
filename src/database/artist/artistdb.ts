@@ -48,24 +48,18 @@ class ArtistDb {
     return this.artist.entries[artistId];
   }
 
-  deleteArtist(artistId: string, tracks: TrackObject, albums: AlbumObject) {
+  deleteArtist(artistId: string) {
     const index = this.artist.ids.indexOf(artistId);
     if (index === -1) {
       throw new NotFoundException('Artist not found');
     }
-    tracks.ids.forEach((trackId) => {
-      if (tracks.entries[trackId].artistId === artistId) {
-        tracks.entries[trackId].artistId = null;
-      }
-    });
-    albums.ids.forEach((albumId) => {
-      if (albums.entries[albumId].artistId === artistId) {
-        albums.entries[albumId].artistId = null;
-      }
-    });
     this.artist.ids.splice(index, 1);
     delete this.artist.entries[artistId];
     return {};
+  }
+
+  artistExists(artistId: string) {
+    return this.artist.entries[artistId] || false;
   }
 }
 

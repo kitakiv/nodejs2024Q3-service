@@ -62,8 +62,34 @@ class TrackDB {
     return this.track.entries[trackId];
   }
 
+  deleteArtistFromTrack(artistId: string) {
+    this.track.ids.forEach((trackId) => {
+      const track = this.track.entries[trackId];
+      if (track) {
+        if (track.artistId === artistId) {
+          this.track.entries[trackId].artistId = null;
+        }
+      }
+    });
+  }
+
+  deleteAlbumFromTrack(id: string) {
+    this.track.ids.forEach((trackId) => {
+      const track = this.track.entries[trackId];
+      if (track) {
+        if (track.albumId === id) {
+          this.track.entries[trackId].albumId = null;
+        }
+      }
+    });
+  }
+
   getTracks() {
     return this.track;
+  }
+
+  trackExists(trackId: string) {
+    return this.track.entries[trackId] || false;
   }
 }
 
