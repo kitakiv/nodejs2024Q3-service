@@ -2,8 +2,6 @@ import { CreateArtistDto } from 'src/artist/dto/artist.dto';
 import { ArtistObject } from '../interface/artistinterface';
 import { v4 as uuid } from 'uuid';
 import { NotFoundException } from '@nestjs/common';
-import { TrackObject } from '../interface/trackinterface';
-import { AlbumObject } from '../interface/albuminterface';
 
 class ArtistDb {
   private artist: ArtistObject;

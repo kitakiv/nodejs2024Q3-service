@@ -2,7 +2,6 @@ import { CreateAlbumDto } from 'src/album/dto/album.dto';
 import { AlbumObject } from '../interface/albuminterface';
 import { v4 as uuid } from 'uuid';
 import { NotFoundException } from '@nestjs/common';
-import { TrackObject } from '../interface/trackinterface';
 
 class AlbumDB {
   private album: AlbumObject;
