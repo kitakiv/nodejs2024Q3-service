@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  dev-db:
+    image: postgresimage
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Str0ngP@ssw0rd
+      POSTGRES_DB: nest
+    networks:
+      - todo
+networks:
+  todo:
