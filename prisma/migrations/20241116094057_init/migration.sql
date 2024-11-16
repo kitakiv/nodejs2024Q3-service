@@ -4,8 +4,8 @@ CREATE TABLE "User" (
     "login" TEXT NOT NULL,
     "version" INTEGER NOT NULL DEFAULT 1,
     "password" TEXT NOT NULL,
-    "createdAt" INTEGER NOT NULL,
-    "updatedAt" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -67,9 +67,6 @@ CREATE TABLE "_FavoritesToTrack" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_id_key" ON "User"("id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_login_key" ON "User"("login");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Track_id_key" ON "Track"("id");
