@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto, UpdatePasswordDto } from './dto/user.dto';
 import { PrismaService } from 'src/prismadb/prismadb.service';
 import { v4 as uuid } from 'uuid';
-import { User } from '@prisma/client';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 
 @Injectable()
@@ -38,7 +37,14 @@ export class UserService {
     return this.deletePassword(result);
   }
 
-  deletePassword(user: User) {
+  deletePassword(user: {
+    id: string;
+    login: string;
+    version: number;
+    password: string;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+  }) {
     const createdUser = {
       id: user.id,
       login: user.login,

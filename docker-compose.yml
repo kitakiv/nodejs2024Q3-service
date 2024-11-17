@@ -1,15 +1,32 @@
 version: '3.8'
 
 services:
-  dev-db:
+  postgres:
+    restart: always
     image: postgresimage
     ports:
-      - 5432:5432
+      - "${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Str0ngP@ssw0rd
-      POSTGRES_DB: nest
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     networks:
       - todo
+  myapp:
+    restart: always
+    image: nodeimage
+    ports:
+      - "${NODE_PORT:-4000}:${NODE_PORT:-4000}"
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - todo
+
 networks:
   todo:
+    driver: bridge

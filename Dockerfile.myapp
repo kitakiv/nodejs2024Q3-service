@@ -7,14 +7,15 @@ WORKDIR /app
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
+
 # Install dependencies
 RUN npm install
 
 # Copy the application code
 COPY . .
-
+ARG NODE_PORT
 # Expose the port your application runs on
-EXPOSE 3000
+EXPOSE ${NODE_PORT}
 
 # Define the command to run the application
-CMD ["npm", "start"]
+CMD [ "npm", "start" ]
