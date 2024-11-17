@@ -1,28 +1,62 @@
-import { Injectable } from '@nestjs/common';
-import { DatabaseService } from 'src/database/database.service';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/album.dto';
+import { PrismaService } from 'src/prismadb/prismadb.service';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class AlbumService {
-  constructor(private database: DatabaseService) {}
+  constructor(private database: PrismaService) {}
 
-  findAll() {
-    return this.database.findAllAlbum();
+  async findAll() {
+    return this.database.album.findMany();
   }
 
-  findOne(id: string) {
-    return this.database.findOneAlbum(id);
+  async findOne(id: string) {
+    const album = await this.database.album.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!album) {
+      throw new NotFoundException('Album not found');
+    }
+    return album;
   }
 
-  createAlbum(createAlbumDto: CreateAlbumDto) {
-    return this.database.createAlbum(createAlbumDto);
+  async createAlbum(createAlbumDto: CreateAlbumDto) {
+    return await this.database.album.create({
+      data: {
+        ...createAlbumDto,
+        id: uuid(),
+      },
+    });
   }
 
-  updateAlbum(album: CreateAlbumDto, albumId: string) {
-    return this.database.updateAlbum(album, albumId);
+  async updateAlbum(album: CreateAlbumDto, albumId: string) {
+    try {
+      return await this.database.album.update({
+        where: {
+          id: albumId,
+        },
+        data: {
+          ...album,
+        },
+      });
+    } catch (error) {
+      throw new NotFoundException('Album not found');
+    }
   }
 
-  deleteAlbum(albumId: string) {
-    return this.database.deleteAlbum(albumId);
+  async deleteAlbum(albumId: string) {
+    try {
+      await this.database.album.delete({
+        where: {
+          id: albumId,
+        },
+      });
+      return {};
+    } catch (error) {
+      throw new NotFoundException('Album not found');
+    }
   }
 }

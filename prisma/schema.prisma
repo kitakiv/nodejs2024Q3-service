@@ -30,8 +30,7 @@ model Track {
   album Album? @relation(fields: [albumId], references: [id])
   albumId String? @unique
   duration Int
-
-  Favorites Favorites[]
+  FavsTracks FavsTracks?
 }
 
 model Artist {
@@ -41,8 +40,7 @@ model Artist {
   Album Album[]
   Track Track[]
 
-
-  Favorites Favorites[]
+  FavsArtists FavsArtists?
 }
 
 model Album {
@@ -53,12 +51,23 @@ model Album {
   artistId String? @unique
   Track Track[]
 
-  Favorites Favorites[]
+  FavsAlbum FavsAlbums?
 }
 
-model Favorites {
+model FavsTracks {
   id String @id @unique @default(uuid())
- artists Artist[]
-  albums Album[]
-  tracks Track[]
+  track Track @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  trackId String @unique
+}
+
+model FavsAlbums {
+  id String @id @unique @default(uuid())
+  album Album @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  albumId String @unique
+}
+
+model FavsArtists {
+  id String @id @unique @default(uuid())
+  album Artist @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  artistId String @unique
 }

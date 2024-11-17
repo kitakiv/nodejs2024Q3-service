@@ -3,6 +3,7 @@ import { CreateUserDto, UpdatePasswordDto } from './dto/user.dto';
 import { PrismaService } from 'src/prismadb/prismadb.service';
 import { v4 as uuid } from 'uuid';
 import { User } from '@prisma/client';
+import { NotFoundException, ForbiddenException } from '@nestjs/common';
 
 @Injectable()
 export class UserService {
@@ -19,6 +20,9 @@ export class UserService {
         id,
       },
     });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
     return this.deletePassword(user);
   }
 
@@ -46,28 +50,41 @@ export class UserService {
   }
 
   async update(passwordFields: UpdatePasswordDto, userId: string) {
-    const user = await this.database.user.update({
+    const user = await this.database.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    if (user.password !== passwordFields.oldPassword) {
+      throw new ForbiddenException('oldPassword is wrong');
+    }
+    const updatedUser = await this.database.user.update({
       where: {
         id: userId,
         password: passwordFields.oldPassword,
       },
       data: {
         password: passwordFields.newPassword,
-        version: {
-          increment: 1,
-        },
+        version: user.version + 1,
         updatedAt: new Date(Date.now()).toISOString(),
       },
     });
-    return this.deletePassword(user);
+    return this.deletePassword(updatedUser);
   }
 
   async delete(id: string) {
-    const user = await this.database.user.delete({
-      where: {
-        id,
-      },
-    });
+    try {
+      await this.database.user.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (error) {
+      throw new NotFoundException('User not found');
+    }
     return {};
   }
 }
