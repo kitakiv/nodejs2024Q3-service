@@ -66,7 +66,7 @@ docker pull kitakiv/nodeimage
 or
 
 ```
-docker build -f Dockerfile.postgres -t kitakiv/nodeimage .
+docker build -f Dockerfile.myapp -t kitakiv/nodeimage .
 ```
 and
 

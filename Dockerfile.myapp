@@ -1,4 +1,3 @@
-# Base image
 FROM node:22
 
 # Set the working directory
@@ -9,6 +8,7 @@ COPY package*.json ./
 
 # Install dependencies
 RUN npm install
+
 # Copy the application code
 COPY . .
 
@@ -18,9 +18,12 @@ ARG DATABASE_URL
 
 # Set environment variables
 ENV NODE_PORT=${NODE_PORT}
+ENV DATABASE_URL=${DATABASE_URL}
+
+# Run Prisma generate after installing dependencies
 
 # Expose the application port
 EXPOSE ${NODE_PORT}
 
 # Define the startup command
-CMD ["npm", "start"]
+CMD ["npm", "ci", "npm", "start"]
