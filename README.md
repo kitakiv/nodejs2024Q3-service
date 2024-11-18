@@ -10,6 +10,9 @@
 ```
 git clone {repository URL}
 ```
+## Env
+create .env from .env.example
+
 
 ## Installing NPM modules
 
@@ -20,7 +23,55 @@ npm install
 ## Running application
 
 ```
+docker pull kitakiv/postgresimage
+```
+or
+
+```
+docker build -f Dockerfile.postgres -t kitakiv/postgresimage
+```
+
+then
+
+```
+docker compose up postgres -d
+```
+
+## Run Prisma
+
+```
+npx prisma migrate dev
+```
+
+```
+npx prisma generate
+```
+
+```
+prisma studio
+```
+
+## Run Server
+
+```
 npm start
+```
+
+## To run application and database use
+
+
+```
+docker pull kitakiv/nodeimage
+```
+or
+
+```
+docker build -f Dockerfile.postgres -t kitakiv/nodeimage
+```
+and
+
+```
+docker compose up
 ```
 
 ### path to the docs /api-docs
