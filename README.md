@@ -28,7 +28,7 @@ docker pull kitakiv/postgresimage
 or
 
 ```
-docker build -f Dockerfile.postgres -t kitakiv/postgresimage
+docker build -f Dockerfile.postgres -t kitakiv/postgresimage .
 ```
 
 then
@@ -66,7 +66,7 @@ docker pull kitakiv/nodeimage
 or
 
 ```
-docker build -f Dockerfile.postgres -t kitakiv/nodeimage
+docker build -f Dockerfile.postgres -t kitakiv/nodeimage .
 ```
 and
 
