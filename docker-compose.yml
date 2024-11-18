@@ -3,7 +3,7 @@ version: '3.8'
 services:
   postgres:
     restart: always
-    image: postgresimage
+    image: kitakiv/postgresimage
     ports:
       - "${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}"
     environment:
@@ -14,7 +14,7 @@ services:
       - todo
   myapp:
     restart: always
-    image: nodeimage
+    image: kitakiv/nodeimage
     ports:
       - "${NODE_PORT:-4000}:${NODE_PORT:-4000}"
     environment:
@@ -30,3 +30,6 @@ services:
 networks:
   todo:
     driver: bridge
+
+volumes:
+  pg_data:
