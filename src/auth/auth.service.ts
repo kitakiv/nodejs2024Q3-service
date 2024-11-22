@@ -4,6 +4,9 @@ import { LoginDtoUser } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuid } from 'uuid';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import * as bcrypt from 'bcrypt';
+import { config } from 'dotenv';
+config();
 
 @Injectable()
 export class AuthService {
@@ -19,7 +22,8 @@ export class AuthService {
         login,
       },
     });
-    if (!user || user.password !== password) {
+    const isMatch = await bcrypt.compare(password, user.password || '');
+    if (!user || !isMatch) {
       throw new ForbiddenException(
         "no user with such login, password doesn't match actual one",
       );
@@ -32,11 +36,13 @@ export class AuthService {
 
   async signup(user: LoginDtoUser) {
     try {
+      const saltOrRounds = +process.env.CRYPT_SALT;
+      const hash = await bcrypt.hash(user.password, saltOrRounds);
       const result = await this.database.user.create({
         data: {
           id: uuid(),
           login: user.login,
-          password: user.password,
+          password: hash,
           version: 1,
         },
         select: {
