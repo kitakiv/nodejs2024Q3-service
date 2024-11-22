@@ -3,11 +3,12 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { PrismadbModule } from 'src/prismadb/prismadb.module';
 import { JwtModule } from '@nestjs/jwt';
-import { config } from 'dotenv';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from 'src/auth.guard';
+import { config } from 'dotenv';
 config();
 
+@Global()
 @Module({
   imports: [
     PrismadbModule,

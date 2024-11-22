@@ -29,8 +29,13 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
+  @Post()
+  createUser(@Body(ValidationPipe) createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto);
+  }
+
   @Put(':id')
-  updateUser(
+    updateUser(
     @Param('id', ParseUUIDPipe) id: string,
     @Body(ValidationPipe) updateUserDto: UpdatePasswordDto,
   ) {

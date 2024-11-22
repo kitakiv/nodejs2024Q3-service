@@ -15,6 +15,22 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  async refreshToken(refreshToken: string) {
+    try {
+      const { userId, login } = await this.jwtService.verifyAsync(refreshToken);
+      const payload = { userId, login };
+      return {
+        accessToken: await this.jwtService.signAsync(payload),
+        refreshToken: await this.jwtService.signAsync(payload, {
+          expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME,
+          secret: process.env.JWT_SECRET_REFRESH_KEY,
+        })
+      };
+    } catch (error) {
+      throw new ForbiddenException('Invalid refresh token');
+    }
+  }
+
   async login(loginDtoUser: LoginDtoUser) {
     const { login, password } = loginDtoUser;
     const user = await this.database.user.findUnique({
@@ -28,9 +44,13 @@ export class AuthService {
         "no user with such login, password doesn't match actual one",
       );
     }
-    const payload = { id: user.id, login: user.login };
+    const payload = { userId: user.id, login: user.login };
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      accessToken: await this.jwtService.signAsync(payload),
+      refreshToken: await this.jwtService.signAsync(payload, {
+        expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME,
+        secret: process.env.JWT_SECRET_REFRESH_KEY,
+      })
     };
   }
 

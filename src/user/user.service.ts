@@ -4,6 +4,9 @@ import { PrismaService } from 'src/prismadb/prismadb.service';
 import { v4 as uuid } from 'uuid';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { config } from 'dotenv';
+import * as bcrypt from 'bcrypt';
+config();
 
 @Injectable()
 export class UserService {
@@ -12,6 +15,29 @@ export class UserService {
   async findAll() {
     const users = await this.database.user.findMany();
     return users.map((user) => this.deletePassword(user));
+  }
+
+  async create(createUserDto: CreateUserDto) {
+    try {
+      const saltOrRounds = +process.env.CRYPT_SALT;
+      const hash = await bcrypt.hash(createUserDto.password, saltOrRounds);
+      const user = await this.database.user.create({
+        data: {
+          id: uuid(),
+          login: createUserDto.login,
+          password: hash,
+          version: 1,
+        },
+      });
+      return this.deletePassword(user);
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new ForbiddenException('User already exists');
+        }
+      }
+      throw error;
+    }
   }
 
   async findOne(id: string) {

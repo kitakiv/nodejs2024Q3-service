@@ -7,4 +7,9 @@ class LoginDtoUser {
   password: string;
 }
 
-export { LoginDtoUser };
+class RefreshDtoToken {
+  @IsString()
+  refreshToken: string;
+}
+
+export { LoginDtoUser, RefreshDtoToken };
