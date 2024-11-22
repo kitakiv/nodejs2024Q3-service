@@ -1,10 +1,12 @@
-import { Module } from '@nestjs/common';
-import { TrackService } from './track.service';
-import { TrackController } from './track.controller';
+import { Global, Module } from '@nestjs/common';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
 import { PrismadbModule } from 'src/prismadb/prismadb.module';
 import { JwtModule } from '@nestjs/jwt';
+import { config } from 'dotenv';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from 'src/auth.guard';
+config();
 
 @Module({
   imports: [
@@ -14,13 +16,13 @@ import { AuthGuard } from 'src/auth.guard';
       signOptions: { expiresIn: process.env.TOKEN_EXPIRE_TIME },
     }),
   ],
+  controllers: [AuthController],
   providers: [
-    TrackService,
+    AuthService,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
   ],
-  controllers: [TrackController],
 })
-export class TrackModule {}
+export class AuthModule {}

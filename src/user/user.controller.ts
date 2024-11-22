@@ -9,13 +9,16 @@ import {
   ParseUUIDPipe,
   ValidationPipe,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdatePasswordDto } from './dto/user.dto';
+import { AuthGuard } from 'src/auth.guard';
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
+
   @Get()
   findAllUsers() {
     return this.userService.findAll();
@@ -24,12 +27,6 @@ export class UserController {
   @Get(':id')
   findUniqueUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.userService.findOne(id);
-  }
-
-  @Post()
-  @HttpCode(201)
-  createUser(@Body(ValidationPipe) createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
   }
 
   @Put(':id')

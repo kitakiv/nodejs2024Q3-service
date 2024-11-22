@@ -6,7 +6,11 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    " vulnerabilities_scanning": "snyk test",
+    "vulnerabilities_scanning": "snyk test",
+    "db:remove": "docker compose rm -f -v -s",
+    "db:start": "docker compose up -d",
+    "prisma:dev:deploy": "npx prisma migrate deploy",
+    "db:restart": "npm run db:remove && npm run db:start && npm run prisma:dev:deploy",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",

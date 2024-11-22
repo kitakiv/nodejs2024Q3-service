@@ -3,6 +3,7 @@ import { CreateUserDto, UpdatePasswordDto } from './dto/user.dto';
 import { PrismaService } from 'src/prismadb/prismadb.service';
 import { v4 as uuid } from 'uuid';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class UserService {
@@ -23,18 +24,6 @@ export class UserService {
       throw new NotFoundException('User not found');
     }
     return this.deletePassword(user);
-  }
-
-  async create(user: CreateUserDto) {
-    const result = await this.database.user.create({
-      data: {
-        id: uuid(),
-        login: user.login,
-        password: user.password,
-        version: 1,
-      },
-    });
-    return this.deletePassword(result);
   }
 
   deletePassword(user: {
