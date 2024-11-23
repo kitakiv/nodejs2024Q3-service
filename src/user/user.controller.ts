@@ -9,11 +9,9 @@ import {
   ParseUUIDPipe,
   ValidationPipe,
   HttpCode,
-  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdatePasswordDto } from './dto/user.dto';
-import { AuthGuard } from 'src/auth.guard';
 
 @Controller('user')
 export class UserController {

@@ -79,16 +79,21 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    if (user.password !== passwordFields.oldPassword) {
+    const isMatch = await bcrypt.compare(
+      passwordFields.oldPassword,
+      user.password,
+    );
+    if (!isMatch) {
       throw new ForbiddenException('oldPassword is wrong');
     }
+    const saltOrRounds = +process.env.CRYPT_SALT;
+    const hash = await bcrypt.hash(passwordFields.newPassword, saltOrRounds);
     const updatedUser = await this.database.user.update({
       where: {
         id: userId,
-        password: passwordFields.oldPassword,
       },
       data: {
-        password: passwordFields.newPassword,
+        password: hash,
         version: user.version + 1,
         updatedAt: new Date(Date.now()).toISOString(),
       },
