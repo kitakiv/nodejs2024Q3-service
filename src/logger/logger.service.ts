@@ -50,4 +50,14 @@ export class MyLogger implements LoggerService {
       this.formatMessage(process.env.VERBOSE, message, ...optionalParams),
     );
   }
+
+  onModuleInit() {
+    process.on('uncaughtException', (error) => {
+      this.fatal('Uncaught Exception', error.stack || error.message || error);
+    });
+
+    process.on('unhandledRejection', (reason, promise) => {
+      this.fatal('Unhandled Rejection', 'Reason:', reason, 'Promise:', promise);
+    });
+  }
 }
