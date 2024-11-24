@@ -3,8 +3,6 @@ import { AlbumController } from './album.controller';
 import { AlbumService } from './album.service';
 import { PrismadbModule } from 'src/prismadb/prismadb.module';
 import { JwtModule } from '@nestjs/jwt';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from 'src/auth.guard';
 import { config } from 'dotenv';
 config();
 
@@ -17,12 +15,6 @@ config();
     }),
   ],
   controllers: [AlbumController],
-  providers: [
-    AlbumService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-  ],
+  providers: [AlbumService],
 })
 export class AlbumModule {}

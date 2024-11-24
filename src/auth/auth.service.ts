@@ -38,7 +38,7 @@ export class AuthService {
         login,
       },
     });
-    const isMatch = await bcrypt.compare(password, user.password || '');
+    const isMatch = await bcrypt.compare(password, user?.password || '');
     if (!user || !isMatch) {
       throw new ForbiddenException(
         "no user with such login, password doesn't match actual one",
@@ -50,7 +50,7 @@ export class AuthService {
       refreshToken: await this.jwtService.signAsync(payload, {
         expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME,
         secret: process.env.JWT_SECRET_REFRESH_KEY,
-      })
+      }),
     };
   }
 

@@ -3,8 +3,6 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { PrismadbModule } from 'src/prismadb/prismadb.module';
 import { JwtModule } from '@nestjs/jwt';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from 'src/auth.guard';
 import { config } from 'dotenv';
 config();
 
@@ -18,12 +16,6 @@ config();
     }),
   ],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-  ],
+  providers: [AuthService],
 })
 export class AuthModule {}

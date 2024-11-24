@@ -33,7 +33,7 @@ export class UserController {
   }
 
   @Put(':id')
-    updateUser(
+  updateUser(
     @Param('id', ParseUUIDPipe) id: string,
     @Body(ValidationPipe) updateUserDto: UpdatePasswordDto,
   ) {

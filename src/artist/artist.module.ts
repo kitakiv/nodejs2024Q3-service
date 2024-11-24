@@ -3,8 +3,6 @@ import { ArtistController } from './artist.controller';
 import { ArtistService } from './artist.service';
 import { PrismadbModule } from 'src/prismadb/prismadb.module';
 import { JwtModule } from '@nestjs/jwt';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from 'src/auth.guard';
 
 @Module({
   imports: [
@@ -15,12 +13,6 @@ import { AuthGuard } from 'src/auth.guard';
     }),
   ],
   controllers: [ArtistController],
-  providers: [
-    ArtistService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-  ],
+  providers: [ArtistService],
 })
 export class ArtistModule {}

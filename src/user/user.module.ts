@@ -4,8 +4,6 @@ import { UserService } from './user.service';
 import { PrismadbModule } from 'src/prismadb/prismadb.module';
 import { JwtModule } from '@nestjs/jwt';
 import { config } from 'dotenv';
-import { AuthGuard } from 'src/auth.guard';
-import { APP_GUARD } from '@nestjs/core';
 config();
 
 @Module({
@@ -17,12 +15,6 @@ config();
     }),
   ],
   controllers: [UserController],
-  providers: [
-    UserService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-  ],
+  providers: [UserService],
 })
 export class UserModule {}

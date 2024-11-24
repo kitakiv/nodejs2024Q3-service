@@ -4,7 +4,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UnauthorizedException,
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -32,10 +31,10 @@ export class AuthController {
   @Post('refresh')
   @Public()
   @HttpCode(HttpStatus.OK)
-  async refreshToken(@Body() refreshDtoToken: { refreshToken: unknown }) {
-    if (!refreshDtoToken || typeof refreshDtoToken.refreshToken !== 'string') {
-      throw new UnauthorizedException('Invalid token format');
-    }
+  async refreshToken(
+    @Body(new ValidationPipe({ errorHttpStatusCode: HttpStatus.UNAUTHORIZED }))
+    refreshDtoToken: RefreshDtoToken,
+  ) {
     return this.authService.refreshToken(refreshDtoToken.refreshToken);
   }
 }
