@@ -13,7 +13,7 @@ async function bootstrap() {
     logger: new MyLogger(),
   });
   const swaggerDocument = YAML.load(join(__dirname, '../doc/api.yaml'));
-  SwaggerModule.setup('api-docs', app, swaggerDocument);
+  SwaggerModule.setup('doc', app, swaggerDocument);
   await app.listen(process.env.PORT);
 }
 bootstrap();
