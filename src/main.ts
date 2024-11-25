@@ -10,9 +10,8 @@ config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    bufferLogs: true,
+    logger: new MyLogger(),
   });
-  app.useLogger(app.get(MyLogger));
   const swaggerDocument = YAML.load(join(__dirname, '../doc/api.yaml'));
   SwaggerModule.setup('api-docs', app, swaggerDocument);
   await app.listen(process.env.PORT);

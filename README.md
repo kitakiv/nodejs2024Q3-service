@@ -33,28 +33,16 @@ docker build -f Dockerfile.postgres -t kitakiv/postgresimage .
 
 then
 
-```
-docker compose up postgres -d
-```
-
 ## Run Prisma
 
 ```
-npx prisma migrate dev
-```
-
-```
-npx prisma generate
-```
-
-```
-prisma studio
+npm run db:restart
 ```
 
 ## Run Server
 
 ```
-npm start
+npm run start
 ```
 
 ## To run application and database use

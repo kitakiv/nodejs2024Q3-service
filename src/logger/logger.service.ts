@@ -1,63 +1,98 @@
-import { LoggerService, Injectable } from '@nestjs/common';
+import { LoggerService, Injectable, OnModuleInit } from '@nestjs/common';
 import { config } from 'dotenv';
+import * as winston from 'winston';
+import 'winston-daily-rotate-file';
 config();
 
 @Injectable()
-export class MyLogger implements LoggerService {
-  private formatMessage(
-    level: string,
-    message: any,
-    ...optionalParams: any[]
-  ): string {
-    const timestamp = new Date().toISOString();
-    const context =
-      optionalParams.length > 0 ? `[${optionalParams.join(' ')}]` : '';
-    return `${timestamp} [${level}] ${context} ${message}`;
+export class MyLogger implements LoggerService, OnModuleInit {
+  private logger: winston.Logger;
+
+  constructor() {
+    const logLevel = this.getLogLevel();
+    this.logger = winston.createLogger({
+      level: logLevel,
+      levels: winston.config.npm.levels,
+      transports: [
+        new winston.transports.DailyRotateFile({
+          dirname: 'logs',
+          filename: 'application-%DATE%.log',
+          datePattern: 'YYYY-MM-DD',
+          maxSize: process.env.LOG_FILE_MAX_SIZE,
+          maxFiles: process.env.MAX_FILES,
+        }),
+
+        new winston.transports.DailyRotateFile({
+          dirname: 'logs',
+          filename: 'error-%DATE%.log',
+          datePattern: 'YYYY-MM-DD',
+          level: 'error',
+          maxSize: process.env.LOG_FILE_MAX_SIZE_ERROR,
+          maxFiles: process.env.MAX_FILES,
+        }),
+
+        new winston.transports.Console({
+          format: winston.format.combine(
+            winston.format.colorize(),
+            winston.format.timestamp(),
+            winston.format.printf(
+              ({ timestamp, level, message }) =>
+                `${timestamp} [${level}]: ${message}`,
+            ),
+          ),
+        }),
+      ],
+      format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.printf(
+          ({ timestamp, level, message }) =>
+            `${timestamp} [${level}]: ${message}`,
+        ),
+      ),
+    });
+  }
+
+  private getLogLevel(): string {
+    const levels = [
+      'error',
+      'warn',
+      'info',
+      'http',
+      'verbose',
+      'debug',
+      'silly',
+    ];
+    const logLevelIndex = parseInt(process.env.LOG_LEVEL, 10);
+    return levels[Math.min(logLevelIndex, levels.length - 1)];
   }
 
   log(message: any, ...optionalParams: any[]) {
-    console.log(
-      this.formatMessage(process.env.LOG, message, ...optionalParams),
-    );
-  }
-
-  fatal(message: any, ...optionalParams: any[]) {
-    console.error(
-      this.formatMessage(process.env.FATAL, message, ...optionalParams),
-    );
+    this.logger.info(message, ...optionalParams);
   }
 
   error(message: any, ...optionalParams: any[]) {
-    console.error(
-      this.formatMessage(process.env.ERROR, message, ...optionalParams),
-    );
+    this.logger.error(message, ...optionalParams);
   }
 
   warn(message: any, ...optionalParams: any[]) {
-    console.warn(
-      this.formatMessage(process.env.WARN, message, ...optionalParams),
-    );
+    this.logger.warn(message, ...optionalParams);
   }
 
   debug?(message: any, ...optionalParams: any[]) {
-    console.debug(
-      this.formatMessage(process.env.DEBUG, message, ...optionalParams),
-    );
+    this.logger.debug(message, ...optionalParams);
   }
 
   verbose?(message: any, ...optionalParams: any[]) {
-    console.info(
-      this.formatMessage(process.env.VERBOSE, message, ...optionalParams),
-    );
+    this.logger.verbose(message, ...optionalParams);
   }
 
   onModuleInit() {
     process.on('uncaughtException', (error) => {
-      this.fatal('Uncaught Exception', error.stack || error.message || error);
+      this.error('Uncaught Exception:', error.stack || error.message);
     });
 
-    process.on('unhandledRejection', (reason, promise) => {
-      this.fatal('Unhandled Rejection', 'Reason:', reason, 'Promise:', promise);
+    process.on('unhandledRejection', (reason) => {
+      this.error('Unhandled Rejection:', reason);
     });
   }
 }
