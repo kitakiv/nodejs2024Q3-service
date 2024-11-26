@@ -187,7 +187,7 @@ paths:
           description: Successful signup
         400:
           description: Bad request
-        409:
+        403:
           description: Conflict. Login already exists
   /users:
     get:
